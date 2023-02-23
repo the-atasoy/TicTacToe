@@ -2,10 +2,10 @@ from tkinter import *
 import random
 players = ["X", "O"]
 player = random.choice(players)
-
+spaces = 9
 
 def empty_spaces():
-    spaces = 9
+    global spaces
     for row in range(3):
         for column in range(3):
             if buttons[row][column]["text"] != "":
@@ -61,43 +61,60 @@ def next_turn(row, column):
             if wincheck() is False:
                 buttons[row][column]["text"] = player
                 player = players[1]
-                label.config(text=("TURN:" + player), font=("Monaco", 52))
+                label.config(text=("TURN:" + player), font=("Monaco, BOLD", 45))
             if wincheck() is True:
-                label.config(text=("WINNER:" + players[0]), font=("Monaco", 52))
-            elif wincheck() is "TIE":
-                label.config(text="TIE", font=("Monaco", 52))
+                label.config(text=("WINNER:" + players[0]), font=("Monaco, BOLD", 45))
+            elif wincheck() == "TIE":
+                label.config(text="TIE", font=("Monaco, BOLD", 45))
         elif player == players[1]:
             if wincheck() is False:
                 buttons[row][column]["text"] = player
                 player = players[0]
-                label.config(text=("TURN:" + player), font=("Monaco", 52))
+                label.config(text=("TURN:" + player), font=("Monaco, BOLD", 45))
             if wincheck() is True:
-                label.config(text=("WINNER:" + players[1]), font=("Monaco", 52))
-            elif wincheck() is "TIE":
-                label.config(text="TIE", font=("Monaco", 52))
+                label.config(text=("WINNER:" + players[1]), font=("Monaco, BOLD", 45))
+            elif wincheck() == "TIE":
+                label.config(text="TIE", font=("Monaco, BOLD", 45))
+
+def restart():
+    global buttons
+    global spaces
+    global player
+
+    spaces = 9
+    player = random.choice(players)
+    label.config(text=("TURN:" + player), font=("Monaco, BOLD", 45), bg="#404040")
+
+    for row in range(3):
+        for column in range(3):
+            buttons[row][column].config(text="", bg="#404040")
 
 window = Tk()
-window.geometry("700x700")
+window.geometry("700x670")
+window.maxsize(700, 670)
+window.minsize(700, 670)
+window.configure(bg="black")
 window.title("Tic-Tac-Toe")
 
-top_frame = Frame(window, bg="red")
-top_frame.place(rely=0.02, relx=0.02, relheight=0.15, relwidth=0.96)
+top_frame = Frame(window)
+top_frame.place(rely=0.01, relx=0.02, relheight=0.13, relwidth=0.96)
 bottom_frame = Frame(window)
-bottom_frame.place(rely=0.19, relx=0.02, relheight=0.79, relwidth=0.96)
+bottom_frame.place(rely=0.15, relx=0.02, relheight=0.86, relwidth=0.96)
 
-label = Label(top_frame, text=("TURN:" + player), font=("Monaco", 52))
-label.pack(side=LEFT)
+label = Label(top_frame, text=("TURN:" + player), font=("Monaco, BOLD", 45), bg="#404040")
+label.place(relx=0, rely=0, relheight=1, relwidth=0.50)
 
 buttons = [[0, 0, 0],
            [0, 0, 0],
            [0, 0, 0]]
 
-
-
 for row in range(3):
     for column in range(3):
-        buttons[row][column] = Button(bottom_frame, text="", bg="#404040", font=("Monaco", 40),
+        buttons[row][column] = Button(bottom_frame, text="", bg="#404040", font=("Monaco, BOLD", 46), height=2, width=6,
                                       command=lambda row = row, column = column: next_turn(row, column))
-        buttons[row][column].place(rely=column*0.33, relx=row*0.33, relwidth=0.33+row*0.33, relheight=0.33+column*0.33)
-window.mainloop()
+        buttons[row][column].grid(row=row, column=column)
 
+restart_button = Button(top_frame, text="RESTART", bg="#404040", font=("Monaco, BOLD", 45), command=restart())
+restart_button.place(relx=0.50, rely=0, relheight=1, relwidth=0.50)
+
+window.mainloop()
